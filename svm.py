@@ -126,3 +126,19 @@ plt.show()
 
 
 dt.info()
+
+
+#data visualization
+Steady = dt.loc[dt["insulin"]=="Steady"].count()[0]
+Down = dt.loc[dt["insulin"]=="Down"].count()[0]
+Up = dt.loc[dt["insulin"]=="Up"].count()[0]
+
+
+plt.figure(figsize = [5,5], dpi = 120)
+labels = ["Steady", "Down", "Up"]
+
+plt.pie([Steady, Down, Up], labels = labels, autopct = "%0.2f%%")
+plt.title("Diabetes Patients by Insulin", fontdict = {"fontweight": "bold"})
+
+plt.legend()
+plt.show()
