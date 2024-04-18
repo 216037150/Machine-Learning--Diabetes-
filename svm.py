@@ -152,3 +152,10 @@ cat_feats= [col for col in dt.columns if dt[col].dtypes == 'object']
 # encode the categorical features
 encoder = LabelEncoder()
 dt[cat_feats] = dt[cat_feats].apply(encoder.fit_transform)
+
+#spliting the dat int traiinng and testing set
+
+from sklearn.model_selection import train_test_split
+
+y = dt['diabetesMed']  # Target
+X = dt.drop(columns = 'diabetesMed')  #Training
