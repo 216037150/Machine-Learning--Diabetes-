@@ -168,3 +168,94 @@ from sklearn.preprocessing import MinMaxScaler
 scaling = MinMaxScaler(feature_range=(-1,1)).fit(X_train)
 X_train = scaling.transform(X_train)
 X_test = scaling.transform(X_test)
+
+#pip install catboost
+# install catboost to build the XGBOOST
+
+
+from sklearn.model_selection import train_test_split
+from catboost import CatBoostClassifier, Pool
+from sklearn.metrics import roc_auc_score
+X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.2, random_state=10, shuffle=True)
+model = CatBoostClassifier(eval_metric="AUC", task_type="CPU",iterations=10, random_seed=2)
+
+model.fit(X_train, y_train)
+pred = model.predict_proba(X_valid)
+
+from sklearn.metrics import accuracy_score
+accuracy_score(y_valid, model.predict(X_valid))
+
+from xgboost import XGBClassifier
+from xgboost import plot_importance
+from matplotlib import pyplot
+
+xgb_model = XGBClassifier(max_depth=3, tree_method='approx')
+xgb_model.fit(X_train, y_train)
+xgb = xgb_model.predict_proba(X_valid)
+
+plot_importance(xgb_model)
+plt.figure(figsize=(100,100))
+pyplot.show()
+plt.savefig('important parameters')
+
+#best features
+change = dt['change']
+insulin = dt['insulin']
+glyburide = dt['glyburide']
+glipizide = dt['glipizide']
+metformin = dt['metformin']
+pioglitazone = dt['pioglitazone']
+glimepiride = dt['glimepiride']
+
+#building data frame
+from pandas import DataFrame
+z = DataFrame([change, insulin, glyburide, glipizide, metformin, pioglitazone, glimepiride])
+X = z.transpose()
+X.columns=['change', 'insulin', 'glyburide', 'glipizide', 'metformin', 'pioglitazone', 'glimeride']
+y = y = dt['diabetesMed']
+
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.3, random_state=123)
+
+
+# Feature Scaling
+from sklearn.preprocessing import StandardScaler
+
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+from sklearn.svm import SVC
+
+
+from sklearn.model_selection import GridSearchCV
+
+# defining parameter range
+param_grid = {'C': [ 1, 10, 100, 1000],
+              'gamma': [1, 0.1, 0.01, 0.001],
+              'kernel': ['rbf']}
+
+grid = GridSearchCV(SVC(), param_grid, refit = True, verbose = 3)
+
+# fitting the model for grid search
+grid.fit(X_train, y_train)
+
+
+# print best parameter after tuning
+print(grid.best_params_)
+
+
+print(grid.best_estimator_)
+
+
+# train the model on train set
+model =  SVC(C=1.0, break_ties=False, cache_size=200,
+                           class_weight=None, coef0=0.0,
+                           decision_function_shape='ovr', degree=3,
+                           gamma= 1000, kernel='rbf', max_iter=-1,
+                           probability=False, random_state=None, shrinking=True,
+                           tol=0.001, verbose=False)
+model.fit(X_train, y_train)
+
+# print prediction results
+predictions = model.predict(X_test)
+print(classification_report(y_test, predictions))
