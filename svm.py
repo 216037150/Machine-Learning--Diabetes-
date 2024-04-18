@@ -162,3 +162,9 @@ X = dt.drop(columns = 'diabetesMed')  #Training
 
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True, random_state=10, stratify=y)
+
+#standadize the data
+from sklearn.preprocessing import MinMaxScaler
+scaling = MinMaxScaler(feature_range=(-1,1)).fit(X_train)
+X_train = scaling.transform(X_train)
+X_test = scaling.transform(X_test)
