@@ -142,3 +142,13 @@ plt.title("Diabetes Patients by Insulin", fontdict = {"fontweight": "bold"})
 
 plt.legend()
 plt.show()
+
+
+#encodeing, changing the string data tpes int int
+from sklearn.preprocessing import LabelEncoder
+# get only categorical columns list
+cat_feats= [col for col in dt.columns if dt[col].dtypes == 'object']
+
+# encode the categorical features
+encoder = LabelEncoder()
+dt[cat_feats] = dt[cat_feats].apply(encoder.fit_transform)
